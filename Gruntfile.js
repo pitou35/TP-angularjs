@@ -24,6 +24,7 @@ module.exports = function (grunt) {
     app: require('./bower.json').appPath || 'app',
     dist: 'dist'
   };
+grunt.loadNpmTasks('grunt-connect-proxy');
 
   // Define the configuration for all the tasks
   grunt.initConfig({
@@ -75,11 +76,18 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
+	proxies: [
+	  {
+//TODCHANGE
+      context: '/rest/opower', // the context of the data service
+      host: 'localhost', // wherever the data service is running
+      port: 8080 // the port that the data service is running on
+      }],
       livereload: {
         options: {
           open: true,
           middleware: function (connect) {
-            return [
+            var middlewares= [
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
@@ -91,6 +99,8 @@ module.exports = function (grunt) {
               ),
               connect.static(appConfig.app)
             ];
+			middlewares.push(require('grunt-connect-proxy/lib/utils').proxyRequest);
+	return middlewares;
           }
         }
       },
@@ -98,7 +108,7 @@ module.exports = function (grunt) {
         options: {
           port: 9001,
           middleware: function (connect) {
-            return [
+            var middlewares = [
               connect.static('.tmp'),
               connect.static('test'),
               connect().use(
@@ -107,6 +117,9 @@ module.exports = function (grunt) {
               ),
               connect.static(appConfig.app)
             ];
+			middlewares.push(require('grunt-connect-proxy/lib/utils').proxyRequest);
+ 
+	return middlewares;
           }
         }
       },
@@ -437,6 +450,7 @@ module.exports = function (grunt) {
       'wiredep',
       'concurrent:server',
       'postcss:server',
+		'configureProxies:server',
       'connect:livereload',
       'watch'
     ]);
