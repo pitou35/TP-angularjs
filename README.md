@@ -1,12 +1,10 @@
-# tp
+- Pour lister les personnes:
 
-This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
-version 0.15.1.
+http://localhost:9000/listPerson.html
 
-## Build & development
+ATTENTION: l'appli ne liste que dans la console du navigateur mais ne s'affiche pas sur sa page
 
-Run `grunt` for building and `grunt serve` for preview.
+- Pour ajouter une personne:
 
-## Testing
-
-Running `grunt test` will run the unit tests with karma.
+http://localhost:9000/addPerson.html
+Après insertion, on affiche le JSON de la base, seulement la dernière saisie n'apparaît peut-être pas. Dans ce cas, penser à recharger la page
