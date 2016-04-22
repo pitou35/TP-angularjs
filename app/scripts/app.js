@@ -48,3 +48,17 @@ function  controlListePerson($scope, $http, $log){
 			$scope.listPerson= response.data.personne;
     });
 }
+
+dataApp.controller('addPerson', addPerson);
+
+function addPerson($scope, $http, $log,$window){
+	$scope.addPerson = function(item) {
+		$http({
+			method: 'POST',
+			url: "http://localhost:9000/rest/rest-opower/personJSON",
+		data:  {nom: $scope.nom, prenom: $scope.prenom, email: $scope.email} 
+		}).then(function successCallback(response) {
+			$window.location.href = "http://localhost:9000/rest/rest-opower/dataPerson"; 
+		});
+	}
+}
