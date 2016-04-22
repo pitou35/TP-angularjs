@@ -1,4 +1,4 @@
-// Generated on 2016-04-22 using generator-angular 0.15.1
+// Generated on 2016-03-08 using generator-angular 0.15.1
 'use strict';
 
 // # Globbing
@@ -49,9 +49,9 @@ grunt.loadNpmTasks('grunt-connect-proxy');
         files: ['test/spec/{,*/}*.js'],
         tasks: ['newer:jshint:test', 'newer:jscs:test', 'karma']
       },
-      styles: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
-        tasks: ['newer:copy:styles', 'postcss']
+      compass: {
+        files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+        tasks: ['compass:server', 'postcss:server']
       },
       gruntfile: {
         files: ['Gruntfile.js']
@@ -76,10 +76,10 @@ grunt.loadNpmTasks('grunt-connect-proxy');
         hostname: 'localhost',
         livereload: 35729
       },
-	proxies: [
+      proxies: [
 	  {
 //TODCHANGE
-      context: '/rest/opower', // the context of the data service
+      context: '/rest/rest-opower', // the context of the data service
       host: 'localhost', // wherever the data service is running
       port: 8080 // the port that the data service is running on
       }],
@@ -99,7 +99,7 @@ grunt.loadNpmTasks('grunt-connect-proxy');
               ),
               connect.static(appConfig.app)
             ];
-			middlewares.push(require('grunt-connect-proxy/lib/utils').proxyRequest);
+           middlewares.push(require('grunt-connect-proxy/lib/utils').proxyRequest);
 	return middlewares;
           }
         }
@@ -108,7 +108,7 @@ grunt.loadNpmTasks('grunt-connect-proxy');
         options: {
           port: 9001,
           middleware: function (connect) {
-            var middlewares = [
+	var middlewares = [
               connect.static('.tmp'),
               connect.static('test'),
               connect().use(
@@ -117,9 +117,10 @@ grunt.loadNpmTasks('grunt-connect-proxy');
               ),
               connect.static(appConfig.app)
             ];
-			middlewares.push(require('grunt-connect-proxy/lib/utils').proxyRequest);
+        middlewares.push(require('grunt-connect-proxy/lib/utils').proxyRequest);
  
 	return middlewares;
+
           }
         }
       },
@@ -232,8 +233,41 @@ grunt.loadNpmTasks('grunt-connect-proxy');
               }
             }
           }
+      },
+      sass: {
+        src: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+        ignorePath: /(\.\.\/){1,2}bower_components\//
       }
     }, 
+
+    // Compiles Sass to CSS and generates necessary files if requested
+    compass: {
+      options: {
+        sassDir: '<%= yeoman.app %>/styles',
+        cssDir: '.tmp/styles',
+        generatedImagesDir: '.tmp/images/generated',
+        imagesDir: '<%= yeoman.app %>/images',
+        javascriptsDir: '<%= yeoman.app %>/scripts',
+        fontsDir: '<%= yeoman.app %>/styles/fonts',
+        importPath: './bower_components',
+        httpImagesPath: '/images',
+        httpGeneratedImagesPath: '/images/generated',
+        httpFontsPath: '/styles/fonts',
+        relativeAssets: false,
+        assetCacheBuster: false,
+        raw: 'Sass::Script::Number.precision = 10\n'
+      },
+      dist: {
+        options: {
+          generatedImagesDir: '<%= yeoman.dist %>/images/generated'
+        }
+      },
+      server: {
+        options: {
+          sourcemap: true
+        }
+      }
+    },
 
     // Renames files for browser caching purposes
     filerev: {
@@ -351,7 +385,7 @@ grunt.loadNpmTasks('grunt-connect-proxy');
     ngtemplates: {
       dist: {
         options: {
-          module: 'tpApp',
+          module: 'angularApp',
           htmlmin: '<%= htmlmin.dist.options %>',
           usemin: 'scripts/scripts.js'
         },
@@ -402,8 +436,8 @@ grunt.loadNpmTasks('grunt-connect-proxy');
           src: ['generated/*']
         }, {
           expand: true,
-          cwd: 'bower_components/bootstrap/dist',
-          src: 'fonts/*',
+          cwd: '.',
+          src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
           dest: '<%= yeoman.dist %>'
         }]
       },
@@ -418,13 +452,13 @@ grunt.loadNpmTasks('grunt-connect-proxy');
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
-        'copy:styles'
+//        'compass:server'
       ],
       test: [
-        'copy:styles'
+//        'compass'
       ],
       dist: [
-        'copy:styles',
+ //       'compass:dist',
         'imagemin',
         'svgmin'
       ]
@@ -450,7 +484,7 @@ grunt.loadNpmTasks('grunt-connect-proxy');
       'wiredep',
       'concurrent:server',
       'postcss:server',
-		'configureProxies:server',
+      'configureProxies:server', // added just before connect
       'connect:livereload',
       'watch'
     ]);
